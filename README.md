@@ -1,44 +1,44 @@
 # nestjs-Oauth-microsoft
-Genera y valida un token utilizando Oauth con microsoft Graph API y autentica el token con decoradores
+Genera y valida un token utilizando Oauth con la API de Microsoft Graph y autentica el token con decoradores
 ---
 
-## Features
-- Microsoft OAuth 2.0 Authentication
-- Securely fetch user details from Microsoft Graph API
-- Stateless authentication flow
-- Redirect support for frontend integration
+## Características
+- Autenticación Microsoft OAuth 2.0
+- Obtención segura de los detalles del usuario desde la API de Microsoft Graph
+- Flujo de autenticación sin estado
+- Soporte para redirección en integración con el frontend
 
 ---
 
-## Prerequisites
+## Requisitos previos
 
-1. **Node.js**: Ensure Node.js is installed.
-2. **Azure App Registration**: Set up an app in Azure Active Directory and note the following:
+1. **Node.js**: Asegúrate de tener instalado Node.js.
+2. **Registro de aplicación en Azure**: Configura una aplicación en Azure Active Directory y toma nota de lo siguiente:
    - `CLIENT_ID`
    - `CLIENT_SECRET`
-   - `REDIRECT_URI` (e.g., `http://localhost:3000/auth/microsoft/redirect`)
-3. **Environment Variables**: Configure the following in a `.env` file:
+   - `REDIRECT_URI` (por ejemplo, `http://localhost:3000/auth/microsoft/redirect`)
+3. **Variables de entorno**: Configura lo siguiente en un archivo `.env`:
    ```env
-   MICROSOFT_CLIENT_ID=<your-client-id>
-   MICROSOFT_CLIENT_SECRET=<your-client-secret>
+   MICROSOFT_CLIENT_ID=<tu-client-id>
+   MICROSOFT_CLIENT_SECRET=<tu-client-secret>
    MICROSOFT_REDIRECT_URI=http://localhost:3000/auth/microsoft/redirect
-   SESSION_SECRET=<your-session-secret>
+   SESSION_SECRET=<tu-session-secret>
    ```
 
 ---
 
-## Installation
+## Instalación
 
-1. Clone the repository:
+1. Clonar repositorio:
    ```bash
    git clone <repository-url>
    cd <project-folder>
    ```
-2. Install dependencies:
+2. Instalar dependencias:
    ```bash
    npm install
    ```
-3. Start the application:
+3. Iniciar aplicación:
    ```bash
    npm run start
    ```
@@ -50,18 +50,13 @@ Genera y valida un token utilizando Oauth con microsoft Graph API y autentica el
 
 ### 1. **Login**
 #### `GET /auth/login`
-- **Description**: Redirects to Microsoft login page to initiate the authentication flow.
-- **Response**: Redirects to Microsoft login.
+- **Description**: Redirije a login de microsoft para comenzar el flujo.
+- **Response**: Redirección.
 
 ### 2. **Callback**
 #### `GET /auth/microsoft/redirect`
-- **Description**: Handles the callback from Microsoft after successful login.
-- **Response**: Returns the authenticated user details.
-
-### 2. **Callback**
-#### `GET /auth/health`
-- **Description**: Use the bearen token option to validate this method.
-- **Response**: Returns a string.
+- **Description**: Maneja el callback desde microsoft y genera un token de acceso.
+- **Response**: Retorna la respuesta autenticada.
 
 - **Sample Response**:
   ```json
@@ -77,25 +72,10 @@ Genera y valida un token utilizando Oauth con microsoft Graph API y autentica el
     }
   }
   ```
-
-### 3. **Fetch User Profile from Graph API**
-#### `GET /auth/profile`
-- **Description**: Fetches additional user details from Microsoft Graph API.
-- **Headers**:
-  - `Authorization: Bearer <access_token>`
-- **Response**: Returns the user's Microsoft profile details.
-
-- **Sample Response**:
-  ```json
-  {
-    "id": "12345678-abcd-efgh-ijkl-9876543210",
-    "displayName": "John Doe",
-    "givenName": "John",
-    "surname": "Doe",
-    "mail": "john.doe@example.com",
-    "jobTitle": "Software Engineer"
-  }
-  ```
+### 3. **Callback**
+#### `GET /auth/health`
+- **Description**: Utilizar un bearer token para autenticar el login.
+- **Response**: Retorna un string.
 
 ---
 
@@ -112,62 +92,3 @@ project-folder/
 ├── .env                     # Environment variables
 ├── README.md                # Project documentation
 ```
-
----
-
-## Error Handling
-
-- **404 Not Found**:
-  If the requested route does not exist.
-  ```json
-  {
-    "message": "Cannot GET /<endpoint>",
-    "error": "Not Found",
-    "statusCode": 404
-  }
-  ```
-
-- **401 Unauthorized**:
-  If the user is not authenticated or access token is invalid.
-  ```json
-  {
-    "message": "Unauthorized",
-    "error": "Unauthorized",
-    "statusCode": 401
-  }
-  ```
-
----
-
-## Customization
-
-1. **Frontend Integration**:
-   Update the `callback` route to redirect to your frontend with a token:
-   ```typescript
-   @Get('microsoft/redirect')
-   async microsoftRedirect(@Req() req, @Res() res): Promise<any> {
-     const user = req.user;
-     return res.redirect(`http://localhost:4200/dashboard?token=${user.accessToken}`);
-   }
-   ```
-
-2. **Access Token Usage**:
-   Use the `accessToken` to fetch more details from Microsoft Graph API:
-   ```typescript
-   const response = await axios.get('https://graph.microsoft.com/v1.0/me', {
-     headers: { Authorization: `Bearer ${accessToken}` },
-   });
-   ```
-
----
-
-## Future Enhancements
-- Add database integration to persist user data.
-- Implement token refresh flow for long-lived sessions.
-- Enhance error handling and logging.
-
----
-
-## License
-This project is licensed under the MIT License.
-
